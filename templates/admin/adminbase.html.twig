@@ -7,11 +7,39 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}Admin Panel{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+              integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+              crossorigin="anonymous">
+    {% endblock %}
 </head>
 <body>
+<div class="container">
 
-{% block body %}{% endblock %}
+    <div class="row no-gutters mb-3">
+        <div class="col">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="{{ path('home') }}">Blog</a>
+                <ul class="navbar-nav ml-auto">
+                    {% block menu %}{% endblock %}
+                </ul>
+
+                <div class="form-inline ml-2 my-2 my-lg-0">
+                    <a href="{{ path('app_logout') }}" class="btn btn-secondary my-2 my-sm-0"
+                       type="submit">Logout</a>
+                </div>
+
+            </nav>
+
+        </div>
+    </div>
+    <div class="row no-gutters">
+        <div class="col">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+</div>
 {% block javascripts %}{% endblock %}
+
 </body>
 </html>

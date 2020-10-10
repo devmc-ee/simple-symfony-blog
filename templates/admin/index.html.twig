@@ -1,8 +1,16 @@
 {% extends 'admin/adminbase.html.twig' %}
 {% block body %}
-    <a href="{{ path('app_logout') }}">LogOut</a>
+
     <h1>
         {{ title }}
     </h1>
-    <a href="{{ path('admin_users') }}">Users</a>
+
 {% endblock %}
+ {% block menu %}
+     <li class="nav-item active">
+         <a class="nav-link" href="{{ path('admin_users') }}">Users</a>
+
+     </li>
+
+
+ {% endblock %}
