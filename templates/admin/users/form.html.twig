@@ -1,7 +1,9 @@
 {% extends 'admin/adminbase.html.twig' %}
+
 {% block body %}
     <h1>
         {{ title }}
     </h1>
-    <a href="{{ path('admin_users') }}">Users</a>
+    <h2>Create user: </h2>
+   {{ form(form) }}
 {% endblock %}
