@@ -4,9 +4,21 @@
         {{ title }}
     </h1>
 
-    <h2>Posts: </h2>
-    <div class="col"><a href="{{ path('admin_posts_create') }}">new post</a></div>
-    <table class="table table-fullwidth table-responsive table-hover">
+    <div class="row" >
+        <div class="col  justify-content-center">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="row"><div class="col">
+            <a class="btn btn-primary mb-2 mt-2" href="{{ path('admin_posts_create') }}">new post</a>
+        </div>
+    </div>
+    <table class="table table-fullwidth  table-hover">
         <tbody>
         <tr>
             <th>#</th>
@@ -18,18 +30,12 @@
         {% for post in posts %}
             <tr>
                 <td>{{ post.id }}</td>
-                <td> <a href=""> {{ post.title }}</a></td>
-                <td>{{ post.created_by_id }}</td>
-                <td>{{ post.created_at }}</td>
-                <td></td>
+                <td> <a href="{{ path('admin_post_edit', {'id': post.id}) }}"> {{ post.title }}</a></td>
+                <td>{{ post.getCreatedBy.email }}</td>
+                <td>{{ post.getCreatedAt | date("d.m.Y H:i") }}</td>
+                <td><a href="{{ path('admin_post_edit', {'id': post.id}) }}">Edit</a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 {% endblock %}
-
- {% block menu %}
-     <li class="nav-item active">
-         <a class="nav-link" href="{{ path('admin_home') }}">Dashboard</a>
-     </li>
- {% endblock %}
