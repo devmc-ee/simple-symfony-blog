@@ -20,9 +20,10 @@ class AdminHomeController extends AdminBaseController
 	 */
 	public function index()
 	{
-		$forRender = $this->renderDefault();
 
-		return $this->render('admin/index.html.twig', $forRender);
+
+        return $this->redirectToRoute('admin_posts');
+
 	}
 
 }
