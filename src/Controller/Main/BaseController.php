@@ -19,7 +19,7 @@ class BaseController extends AbstractController
 	public function renderDefault()
 	{
 		return [
-			'title' => 'Home: available posts'
+			'title' => 'Home:'
 		];
 		
 	}
