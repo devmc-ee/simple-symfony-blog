@@ -19,7 +19,7 @@ class HomeController extends BaseController
 	public function index()
 	{
 	    $posts = $this->getDoctrine()->getRepository(Post::class)
-            ->findAll();
+            ->findBy([],['created_at'=>'DESC']);
 		$forRender = $this->renderDefault();
         $forRender['title'] = 'Home: all posts';
         $forRender['posts'] = $posts;

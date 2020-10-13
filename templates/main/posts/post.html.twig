@@ -8,6 +8,8 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-3"><img class="img-fluid post-image" src="{{ asset('uploads/post/') }}{{ post.image }}"
+                                alt=""></div>
         <div class="col">
           {{ post.content |raw }}
         </div>

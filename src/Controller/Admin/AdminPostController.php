@@ -6,6 +6,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\PostRepositoryInterface;
+use App\Service\FileManagerServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,17 +18,21 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AdminPostController extends AdminBaseController
 {
+    private $postRepository;
+
+    public function __construct(PostRepositoryInterface $postRepository)
+    {
+        $this->postRepository = $postRepository;
+    }
 
     /**
      * @Route("/admin/posts", name="admin_posts")
      */
     public function index()
     {
-        $posts = $this->getDoctrine()->getRepository(Post::class)
-                      ->findAll();
         $forRender = $this->renderDefault();
-        $forRender['title'] = 'Admin: posts';
-        $forRender['posts'] = $posts;
+        $forRender['title'] = 'Admin: all posts';
+        $forRender['posts'] = $this->postRepository->getAllPosts();
 
         return $this->render('admin/posts/index.html.twig', $forRender);
     }
@@ -39,23 +45,15 @@ class AdminPostController extends AdminBaseController
      */
     public function create(Request $request)
     {
-
-        $currentUser = $this->getUser();
-
         $entityManager = $this->getDoctrine()->getManager();
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setCreatedAtValue();
-            $post->setUpdateAtValue();
-            $post->setIsPublished();
-            $post->setCreatedBy($currentUser);
-
-
+            $file = $form->get('image')->getData();
+            $this->postRepository->setCreatePost($post, $file);
             $entityManager->persist($post);
             $entityManager->flush();
-
             $this->addFlash('success', 'Post is created!');
 
             return $this->redirectToRoute('admin_posts');
@@ -77,23 +75,22 @@ class AdminPostController extends AdminBaseController
      */
     public function update(int $id, Request $request)
     {
-        $post = $this->getDoctrine()->getRepository(Post::class)
-                     ->find($id);
+        $post = $this->postRepository->getPost($id);
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
-        $entityManager = $this->getDoctrine()->getManager();
-
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $post->setUpdateAtValue();
+                $file = $form->get('image')->getData();
+
+               $this->postRepository->setUpdatePost($post, $file);
                 $this->addFlash('success', 'Post has been updated!');
             }
             if ($form->get('delete')->isClicked()) {
-                $entityManager->remove($post);
+                $this->postRepository->setDeletePost($post);
                 $this->addFlash('success', 'Post has been deleted!');
             }
-            $entityManager->flush();
+
 
             return $this->redirectToRoute('admin_posts');
         }
