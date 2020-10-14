@@ -33,7 +33,8 @@
             {% for comment in comments %}
                 <tr id="comment-{{ comment.id }}" class="{% if not comment.getIsPublished %}table-secondary{% endif %}">
                     <td>{{ comment.id }}</td>
-                    <td><a href="{{ path('admin_post_edit', {'id': comment.post.id}) }}"> {{ comment.post.title }}</a>
+                    <td><a href="{{ path('admin_post_edit', {'id': comment.post.id}) }}">
+                            {{ comment.post.title }} (id:{{ comment.post.id }})</a>
                     </td>
                     <td>{{ comment.content }}</td>
                     <td>{{ comment.getCreatedAt | date("d.m.Y H:i") }}</td>

@@ -43,6 +43,17 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         );
     }
 
+    public function getAllPublishedCommentsBy(int $postId): array
+    {
+        return parent::findBy(
+            [
+                'post'         => $postId,
+                'is_published' => 1,
+            ],
+            ['id' => 'DESC']
+        );
+    }
+
     public function createComment(Comment $comment, Post $post): Comment
     {
 

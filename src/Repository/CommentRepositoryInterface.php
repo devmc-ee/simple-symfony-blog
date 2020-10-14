@@ -9,12 +9,15 @@ use App\Entity\Post;
 
 interface CommentRepositoryInterface
 {
-    public function getAllComments():array ;
+    public function getAllComments(): array;
+
     public function getAllCommentsBy(int $postId): array;
 
-    public function getCommentBy(int $commentId):Comment ;
+    public function getCommentBy(int $commentId): Comment;
 
-    public function getAllLatestComments(int $postId, string $lastCommentId):array ;
+    public function getAllPublishedCommentsBy(int $postId): array;
+
+    public function getAllLatestComments(int $postId, string $lastCommentId): array;
 
     public function createComment(Comment $comment, Post $post): Comment;
 
