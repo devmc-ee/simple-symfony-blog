@@ -18,6 +18,9 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
 {
     private $entityManager;
 
+    /**
+     * @param string $entityClass The class name of the entity this repository manages
+     */
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $entityManager
@@ -79,6 +82,7 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         $comment->setCreatedAtValue();
         $comment->setIsPublished();
         $comment->setPost($post);
+
         $this->entityManager->persist($comment);
         $this->entityManager->flush();
 
@@ -86,6 +90,8 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     }
 
     /**
+     * Retrieve comments starting from the lastCommentId, that is defined when user open post page.
+     * 0 in case no registered comments
      * @param int    $postId
      * @param string $lastCommentId
      *
@@ -94,6 +100,7 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     public function getAllLatestComments(int $postId, string $lastCommentId): array
     {
         $lastCommentIdValue = $lastCommentId ?: 0;
+
         $qb = $this->createQueryBuilder('c')
                    ->andWhere('c.post = :post_id')
                    ->andWhere('c.id > :lastCommentId')
@@ -124,6 +131,9 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
 
     }
 
+    /**
+     * @param \App\Entity\Comment $comment
+     */
     public function setIsHidden(Comment $comment)
     {
         $comment->setIsHidden();
@@ -131,11 +141,19 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         $this->entityManager->flush();
     }
 
+    /**
+     * @param int $commentId
+     *
+     * @return \App\Entity\Comment
+     */
     public function getCommentBy(int $commentId): Comment
     {
         return parent::find($commentId);
     }
 
+    /**
+     * @param \App\Entity\Comment $comment
+     */
     public function setIsPublished(Comment $comment)
     {
         $comment->setIsPublished();
@@ -143,6 +161,9 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         $this->entityManager->flush();
     }
 
+    /**
+     * @param \App\Entity\Comment $comment
+     */
     public function setDeleteComment(Comment $comment)
     {
         $this->entityManager->remove($comment);

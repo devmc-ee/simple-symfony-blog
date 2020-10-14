@@ -23,6 +23,9 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     private $security;
     private $commentRepository;
 
+    /**
+     * @param string $entityClass The class name of the entity this repository manages
+     */
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $entityManager,
@@ -102,6 +105,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
             $post->setImage($fileName);
         }
         $post->setUpdateAtValue();
+
         $this->entityManager->flush();
 
         return $post;

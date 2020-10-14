@@ -16,6 +16,11 @@ class HomeController extends BaseController
 {
     private $commentRepository;
 
+    /**
+     * HomeController constructor.
+     *
+     * @param \App\Repository\CommentRepositoryInterface $commentRepository
+     */
     public function __construct(
         CommentRepositoryInterface $commentRepository
     )
@@ -34,6 +39,7 @@ class HomeController extends BaseController
 		$forRender = $this->renderDefault();
         $forRender['title'] = 'Home: all posts';
         $forRender['posts'] = $posts;
+
 		return $this->render('main/index.html.twig', $forRender);
 	}
 }

@@ -21,9 +21,16 @@ class AdminPostController extends AdminBaseController
     private $postRepository;
     private $commentRepository;
 
-    public function __construct(PostRepositoryInterface $postRepository,
-        CommentRepositoryInterface $commentRepository)
-    {
+    /**
+     * AdminPostController constructor.
+     *
+     * @param \App\Repository\PostRepositoryInterface    $postRepository
+     * @param \App\Repository\CommentRepositoryInterface $commentRepository
+     */
+    public function __construct(
+        PostRepositoryInterface $postRepository,
+        CommentRepositoryInterface $commentRepository
+    ) {
         $this->postRepository = $postRepository;
         $this->commentRepository = $commentRepository;
     }
@@ -73,6 +80,7 @@ class AdminPostController extends AdminBaseController
 
     /**
      * @Route("admin/posts/edit/{id}", name="admin_post_edit")
+     *
      * @param int                                       $id
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
@@ -81,21 +89,22 @@ class AdminPostController extends AdminBaseController
     public function update(int $id, Request $request)
     {
         $post = $this->postRepository->getPost($id);
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $file = $form->get('image')->getData();
 
-               $this->postRepository->setUpdatePost($post, $file);
+                $file = $form->get('image')->getData();
+                $this->postRepository->setUpdatePost($post, $file);
                 $this->addFlash('success', 'Post has been updated!');
             }
+
             if ($form->get('delete')->isClicked()) {
                 $this->postRepository->setDeletePost($post);
                 $this->addFlash('success', 'Post has been deleted!');
             }
-
 
             return $this->redirectToRoute('admin_posts');
         }
@@ -105,7 +114,7 @@ class AdminPostController extends AdminBaseController
         $forRender['title'] = 'Updating post';
         $forRender['postId'] = $id;
         $forRender['form'] = $form->createView();
-        $forRender['comments'] =$comments;
+        $forRender['comments'] = $comments;
 
         return $this->render('admin/posts/form.html.twig', $forRender);
     }

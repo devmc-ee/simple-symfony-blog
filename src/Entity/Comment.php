@@ -42,16 +42,27 @@ class Comment
      */
     private $is_published;
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * @return string|null
+     */
     public function getContent(): ?string
     {
         return $this->content;
     }
 
+    /**
+     * @param string $content
+     *
+     * @return \App\Entity\Comment
+     */
     public function setContent(string $content): self
     {
         $this->content = $content;
@@ -59,11 +70,19 @@ class Comment
         return $this;
     }
 
+    /**
+     * @return \App\Entity\Post|null
+     */
     public function getPost(): ?Post
     {
         return $this->post;
     }
 
+    /**
+     * @param \App\Entity\Post|null $post
+     *
+     * @return \App\Entity\Comment
+     */
     public function setPost(?Post $post): self
     {
         $this->post = $post;
@@ -71,16 +90,24 @@ class Comment
         return $this;
     }
 
+    /**
+     * @return \DateTimeInterface|null
+     */
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreatedAtValue()
+    public function setCreatedAtValue(): void
     {
         $this->created_at = new DateTime();
     }
 
+    /**
+     * @param \DateTimeInterface $created_at
+     *
+     * @return \App\Entity\Comment
+     */
     public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
@@ -88,14 +115,18 @@ class Comment
         return $this;
     }
 
+    /**
+     * @return bool|null
+     */
     public function getIsPublished(): ?bool
     {
         return $this->is_published;
     }
-    public function setIsHidden(){
+    public function setIsHidden(): void
+    {
         $this->is_published = self::HIDDEN;
     }
-    public function setIsPublished()
+    public function setIsPublished(): void
     {
         $this->is_published = self::PUBLISHED;
 

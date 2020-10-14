@@ -53,24 +53,27 @@ class CommentController extends BaseController
         $postId = htmlspecialchars($data->post_id);
         $commentContent = htmlspecialchars($data->comment_content);
         $lastCommentId = htmlspecialchars($data->last_comment_id);
+
         $lastNewComments = '';
 
         if (empty($commentContent)) {
             return new JsonResponse([]);
         }
 
-        $comment = new Comment();
-        $comment->setContent($commentContent);
-
         $post = $this->postRepository->getPost($postId);
 
+        $comment = new Comment();
+        $comment->setContent($commentContent);
         $comment = $this->commentRepository->createComment($comment, $post);
+
         $createdAt = $comment->getCreatedAt();
 
         if ($lastCommentId) {
             $lastNewComments = $this->commentRepository->getAllLatestComments($postId, $lastCommentId);
         }
 
+        //comments_returned_count- the number of comments to be sent for helping to define  whether
+        // to json object is iterable or not (on the front-side in js)
         $response = [
             "comments_returned_count" => empty($lastNewComments)
                 ? 0 : count($lastNewComments),

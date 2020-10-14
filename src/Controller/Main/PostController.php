@@ -24,6 +24,13 @@ class PostController extends BaseController
     private $entityManager;
     private $postRepository;
 
+    /**
+     * PostController constructor.
+     *
+     * @param \App\Repository\CommentRepositoryInterface $commentRepository
+     * @param \Doctrine\ORM\EntityManagerInterface       $entityManager
+     * @param \App\Repository\PostRepositoryInterface    $postRepository
+     */
     public function __construct(
         CommentRepositoryInterface $commentRepository,
         EntityManagerInterface $entityManager,
@@ -41,6 +48,7 @@ class PostController extends BaseController
     {
         $posts = $this->getDoctrine()->getRepository(Post::class)
                       ->findAll();
+
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Home: all posts';
         $forRender['posts'] = $posts;
@@ -51,6 +59,7 @@ class PostController extends BaseController
 
     /**
      * @Route("/posts/{postId}", name="post_show")
+     *
      * @param int                                       $postId
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -92,6 +101,7 @@ class PostController extends BaseController
 
     /**
      * @Route("search/posts/", name="search_posts")
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response

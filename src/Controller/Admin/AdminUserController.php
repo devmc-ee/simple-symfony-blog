@@ -20,6 +20,7 @@ class AdminUserController extends AdminBaseController
 {
     /**
      * @Route("/admin/users", name="admin_users")
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      */
@@ -36,6 +37,7 @@ class AdminUserController extends AdminBaseController
 
     /**
      * @Route("/admin/users/create", name="admin_user_create")
+     *
      * @param \Symfony\Component\HttpFoundation\Request                             $request
      * @param \Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface $passwordEncoder
      *

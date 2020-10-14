@@ -26,7 +26,7 @@ class CommentType extends AbstractType
                 'content',
                 TextType::class,
                 [
-                    'label' => 'Comment',
+                    'label' => false,
                     'attr'  => [
                         'placeholder' => 'Leave comment...',
                     ],
