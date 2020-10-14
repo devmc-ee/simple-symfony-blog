@@ -77,8 +77,9 @@ class CommentController extends BaseController
         }
 
         $response = [
-            "comments_returned_count" => count($lastNewComments),
-            "last_comments" => empty($lastNewComments)
+            "comments_returned_count" => empty($lastNewComments)
+                ? 0 : count($lastNewComments),
+            "last_comments"           => empty($lastNewComments)
                 ?
                 [
                     "id"         => $comment->getId(),

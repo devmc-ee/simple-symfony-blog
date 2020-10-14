@@ -55,14 +55,14 @@
 
     function addCommentBlock(response) {
 
-        let newCommentBlocks='';
-        if(response.last_comments
-            && response.last_comments.length > 0){
+        let newCommentBlocks = '';
+        if (response.last_comments
+            && response.last_comments.length > 0) {
             setLastCommentId(response.last_comments[0].id);
         }
-
-        for(let comment of response.last_comments){
-            let commentDateTime =comment.created_at.date.substring(0,16);
+        if (response.comments_returned_count === 0) {
+            const comment = response.last_comments;
+            const commentDateTime = comment.created_at;
             newCommentBlocks = newCommentBlocks + `
 <div class="bd-callout bd-callout-info card comment-${comment.id}">
                             <blockquote class="blockquote mb-0 ">
@@ -72,7 +72,21 @@
                                 </footer>
                             </blockquote>
                         </div>`;
+        } else {
+            for (let comment of response.last_comments) {
+                let commentDateTime = comment.created_at.date.substring(0, 16);
+                newCommentBlocks = newCommentBlocks + `
+<div class="bd-callout bd-callout-info card comment-${comment.id}">
+                            <blockquote class="blockquote mb-0 ">
+                                <p> ${comment.content}</p>
+                                <footer class="blockquote-footer text-muted small">
+                                   id: ${comment.id}: Added at ${commentDateTime}
+                                </footer>
+                            </blockquote>
+                        </div>`;
+            }
         }
+
         newCommentBlocks += '<hr>';
         commentsContainer.innerHTML = newCommentBlocks + commentsContainer.innerHTML;
     }
@@ -89,6 +103,6 @@
     function setLastCommentId(lastCommentId) {
 
         const lastCommentIdInput = document.getElementById('last_comment_id');
-        lastCommentIdInput.value =lastCommentId;
+        lastCommentIdInput.value = lastCommentId;
     }
 })();
