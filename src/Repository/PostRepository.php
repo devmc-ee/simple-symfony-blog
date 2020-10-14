@@ -22,17 +22,20 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     private $entityManager;
     private $fileManager;
     private $security;
+    private $commentRepository;
 
     public function __construct(
         ManagerRegistry $registry,
         EntityManagerInterface $entityManager,
         FileManagerServiceInterface $fileManagerService,
-        Security $security
+        Security $security,
+        CommentRepositoryInterface $commentRepository
     ) {
         parent::__construct($registry, Post::class);
         $this->entityManager = $entityManager;
         $this->fileManager = $fileManagerService;
         $this->security = $security;
+        $this->commentRepository = $commentRepository;
     }
 
 
@@ -41,8 +44,10 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
      */
     public function getAllPosts(): array
     {
-        return parent::findBy([],
-            ['id' => 'DESC']);
+        return parent::findBy(
+            [],
+            ['id' => 'DESC']
+        );
     }
 
     /**
@@ -97,6 +102,7 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         }
         $post->setUpdateAtValue();
         $this->entityManager->flush();
+
         return $post;
     }
 
@@ -108,11 +114,11 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     public function setDeletePost(Post $post)
     {
         $fileName = $post->getImage();
-        if($fileName){
+        if ($fileName) {
             $this->fileManager->removePostImage($fileName);
         }
-        //TODO: check for comments & delete them all
 
+        $this->commentRepository->deleteAllByPostId($post->getId());
 
         $this->entityManager->remove($post);
         $this->entityManager->flush();

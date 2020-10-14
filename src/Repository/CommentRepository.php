@@ -83,8 +83,19 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     }
 
 
+    /**
+     * @param int $postId
+     */
     public function deleteAllByPostId(int $postId)
     {
+        $comments = parent::findBy(['post' => $postId]);
+        if(count($comments)){
+            foreach ( $comments as $comment){
+                $this->entityManager->remove($comment);
+            }
+            $this->entityManager->flush();
+        }
+
 
     }
 
