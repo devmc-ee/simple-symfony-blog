@@ -4,11 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Comment;
 use App\Entity\Post;
-use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -29,7 +27,15 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     }
 
 
-    public function getAllComments(int $postId): array
+    public function getAllComments(): array
+    {
+        return parent::findBy(
+            [],
+            ['id' => 'DESC']
+        );
+    }
+
+    public function getAllCommentsBy(int $postId): array
     {
         return parent::findBy(
             ['post' => $postId],
@@ -37,7 +43,7 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         );
     }
 
-    public function createComment(Comment $comment, Post $post): object
+    public function createComment(Comment $comment, Post $post): Comment
     {
 
         $comment->setCreatedAtValue();
@@ -53,11 +59,11 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     {
         $lastCommentIdValue = $lastCommentId ?: 0;
         $qb = $this->createQueryBuilder('c')
-                                  ->andWhere('c.post = :post_id')
-                                  ->andWhere('c.id > :lastCommentId')
-                                  ->setParameter('post_id', $postId)
-                                  ->setParameter('lastCommentId', $lastCommentIdValue)
-                                  ->orderBy('c.id', 'DESC');
+                   ->andWhere('c.post = :post_id')
+                   ->andWhere('c.id > :lastCommentId')
+                   ->setParameter('post_id', $postId)
+                   ->setParameter('lastCommentId', $lastCommentIdValue)
+                   ->orderBy('c.id', 'DESC');
 
         $query = $qb->getQuery();
 
@@ -69,5 +75,24 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     public function deleteAllByPostId(int $postId)
     {
 
+    }
+
+    public function setIsHidden(Comment $comment)
+    {
+        $comment->setIsHidden();
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
+    }
+
+    public function getCommentBy(int $commentId): Comment
+    {
+        return parent::find($commentId);
+    }
+
+    public function setIsPublished(Comment $comment)
+    {
+        $comment->setIsPublished();
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
     }
 }

@@ -72,7 +72,7 @@ class PostController extends BaseController
             $this->addFlash('success', 'Comment is added!');
 
         }
-        $comments = $this->commentRepository->getAllComments($postId);
+        $comments = $this->commentRepository->getAllCommentsBy($postId);
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Post: '.$post->getTitle();
         $forRender['post'] = $post;

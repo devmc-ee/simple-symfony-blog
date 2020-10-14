@@ -1,0 +1,60 @@
+{% extends 'admin/index.html.twig' %}
+{% block body %}
+    <h1>
+        {{ title }}
+    </h1>
+
+    <div class="row">
+        <div class="col  justify-content-center">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-primary mb-2 mt-2" href="{{ path('admin_posts_create') }}">new post</a>
+        </div>
+    </div>
+    <table class="table table-fullwidth  table-hover">
+        <tbody>
+        <tr>
+            <th>#</th>
+            <th>Post Title</th>
+            <th>Comment</th>
+            <th>Created at</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% if comments %}
+            {% for comment in comments %}
+                <tr id="comment-{{ comment.id }}" class="{% if not comment.getIsPublished %}table-secondary{% endif %}">
+                    <td>{{ comment.id }}</td>
+                    <td><a href="{{ path('admin_post_edit', {'id': comment.post.id}) }}"> {{ comment.post.title }}</a>
+                    </td>
+                    <td>{{ comment.content }}</td>
+                    <td>{{ comment.getCreatedAt | date("d.m.Y H:i") }}</td>
+                    <td>{% if comment.getIsPublished %}
+                            Published
+                        {% else %}
+                            Hidden
+                        {% endif %}
+                    </td>
+                    <td>{% if comment.getIsPublished %}
+                            <a href="{{ path('admin_comment_hide', {'commentId': comment.id}) }}">Hide</a>
+                        {% else %}
+                            <a href="{{ path('admin_comment_publish', {'commentId': comment.id}) }}">Publish</a>
+                        {% endif %}
+                        <a href="{{ path('admin_post_edit', {'id': comment.id}) }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            No have any comments yet.
+        {% endif %}
+        </tbody>
+    </table>
+{% endblock %}
