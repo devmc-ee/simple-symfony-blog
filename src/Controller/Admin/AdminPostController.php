@@ -6,6 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\CommentRepositoryInterface;
 use App\Repository\PostRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,10 +19,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminPostController extends AdminBaseController
 {
     private $postRepository;
+    private $commentRepository;
 
-    public function __construct(PostRepositoryInterface $postRepository)
+    public function __construct(PostRepositoryInterface $postRepository,
+        CommentRepositoryInterface $commentRepository)
     {
         $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -93,10 +97,11 @@ class AdminPostController extends AdminBaseController
 
             return $this->redirectToRoute('admin_posts');
         }
-
+        $comments = $this->commentRepository->getAllCommentsBy($id);
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Updating post';
         $forRender['form'] = $form->createView();
+        $forRender['comments'] =$comments;
 
         return $this->render('admin/posts/form.html.twig', $forRender);
     }

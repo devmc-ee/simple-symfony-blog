@@ -4,7 +4,7 @@
     <h1>
         {{ title }}
     </h1>
-    <h2>Create post: </h2>
+
     <div class="container">
         <div class="row no-gutters">
             <div class="col">
@@ -12,5 +12,43 @@
             </div>
         </div>
     </div>
+    {% if comments is defined and  comments %}
+        <table class="table table-fullwidth  table-hover">
+            <tbody>
+            <tr>
+                <th>#</th>
 
+                <th>Comment</th>
+                <th>Created at</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for comment in comments %}
+                <tr id="comment-{{ comment.id }}" class="{% if not comment.getIsPublished %}table-secondary{% endif %}">
+                    <td>{{ comment.id }}for post {{ comment.post.id }}</td>
+
+                    <td>{{ comment.content }}</td>
+                    <td>{{ comment.getCreatedAt | date("d.m.Y H:i") }}</td>
+                    <td>{% if comment.getIsPublished %}
+                            Published
+                        {% else %}
+                            Hidden
+                        {% endif %}
+                    </td>
+                    <td>{% if comment.getIsPublished %}
+                            <a href="{{ path('admin_comment_hide', {'commentId': comment.id}) }}">Hide</a>
+                        {% else %}
+                            <a href="{{ path('admin_comment_publish', {'commentId': comment.id}) }}">Publish</a>
+                        {% endif %}
+                        <a href="{{ path('admin_comment_delete', {'commentId': comment.id}) }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% else %}
+        No have any comments yet.
+    {% endif %}
 {% endblock %}

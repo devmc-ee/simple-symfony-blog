@@ -13,7 +13,7 @@ class AdminCommentController extends AdminBaseController
 
     public function __construct(CommentRepositoryInterface $commentRepository)
     {
-        $this->commentRepository=$commentRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -24,7 +24,8 @@ class AdminCommentController extends AdminBaseController
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Admin: all comments';
         $forRender['comments'] = $this->commentRepository->getAllComments();
-        return $this->render('admin/comments/index.html.twig',$forRender );
+
+        return $this->render('admin/comments/index.html.twig', $forRender);
     }
 
     /**
@@ -38,6 +39,7 @@ class AdminCommentController extends AdminBaseController
         $comment = $this->commentRepository->getCommentBy($commentId);
         $this->commentRepository->setIsHidden($comment);
         $this->addFlash('success', "The comment #$commentId is hidden now!");
+
         return $this->redirectToRoute('admin_comments');
     }
 
@@ -52,6 +54,7 @@ class AdminCommentController extends AdminBaseController
         $comment = $this->commentRepository->getCommentBy($commentId);
         $this->commentRepository->setIsPublished($comment);
         $this->addFlash('success', "The comment #$commentId is published now!");
+
         return $this->redirectToRoute('admin_comments');
     }
 
@@ -61,10 +64,12 @@ class AdminCommentController extends AdminBaseController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteComment(int $commentId){
+    public function deleteComment(int $commentId)
+    {
         $comment = $this->commentRepository->getCommentBy($commentId);
         $this->commentRepository->setDeleteComment($comment);
         $this->addFlash('success', "The comment #$commentId was deleted!");
+
         return $this->redirectToRoute('admin_comments');
     }
 }
