@@ -2,9 +2,12 @@
 {% block body %}
     <div class="row mb-3">
         <div class="col">
-            <h1>
+            <h1 class="mt-3 mb-3">
                 {{ title }}
             </h1>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <p><a href="{{ path('admin_post_edit', {'id': post.id}) }}">Edit</a></p>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -14,8 +17,9 @@
             {{ post.content |raw }}
         </div>
     </div>
-    <div class="row">
+    <div class="row mt-5 mb-5">
         <div class="col">
+            <h3>Add comments</h3>
             {{ form(commentForm) }}
         </div>
     </div>
@@ -34,20 +38,20 @@
                             <blockquote class="blockquote mb-0 ">
                                 <p> {{ comment.content }}</p>
                                 <footer class="blockquote-footer text-muted small">
-                                   id: {{ comment.id }}>  Added at {{ comment.createdAt | date('d.m.Y H:i') }}
+                                    id: {{ comment.id }}> Added at {{ comment.createdAt | date('d.m.Y H:i') }}
                                 </footer>
                             </blockquote>
                         </div>
 
                     {% endfor %}
-                    {% else %}
+                {% else %}
                     No comments yet. Be the first one!
                 {% endif %}
             </div>
         </div>
     </div>
     <input id="last_comment_id" type="text" hidden
-           value="{% if comments %}{{comments[0].id}}{% endif %}">
+           value="{% if comments %}{{ comments[0].id }}{% endif %}">
 {% endblock %}
 {% block javascripts %}
     <script>
