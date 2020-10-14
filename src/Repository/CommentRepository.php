@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\Post;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -12,39 +16,58 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Comment[]    findAll()
  * @method Comment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CommentRepository extends ServiceEntityRepository
+class CommentRepository extends ServiceEntityRepository implements CommentRepositoryInterface
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    private $entityManager;
+
+    public function __construct(
+        ManagerRegistry $registry,
+        EntityManagerInterface $entityManager
+    ) {
         parent::__construct($registry, Comment::class);
+        $this->entityManager = $entityManager;
     }
 
-    // /**
-    //  * @return Comment[] Returns an array of Comment objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Comment
+    public function getAllComments(int $postId): array
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return parent::findBy(
+            ['post' => $postId],
+            ['id' => 'DESC']
+        );
     }
-    */
+
+    public function createComment(Comment $comment, Post $post): object
+    {
+
+        $comment->setCreatedAtValue();
+        $comment->setIsPublished();
+        $comment->setPost($post);
+        $this->entityManager->persist($comment);
+        $this->entityManager->flush();
+
+        return $comment;
+    }
+
+    public function getAllLatestComments(int $postId, string $lastCommentId): array
+    {
+        $lastCommentIdValue = $lastCommentId ?: 0;
+        $qb = $this->createQueryBuilder('c')
+                                  ->andWhere('c.post = :post_id')
+                                  ->andWhere('c.id > :lastCommentId')
+                                  ->setParameter('post_id', $postId)
+                                  ->setParameter('lastCommentId', $lastCommentIdValue)
+                                  ->orderBy('c.id', 'DESC');
+
+        $query = $qb->getQuery();
+
+        return $query->getArrayResult();
+
+    }
+
+
+    public function deleteAllByPostId(int $postId)
+    {
+
+    }
 }

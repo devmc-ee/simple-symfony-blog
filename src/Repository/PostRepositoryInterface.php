@@ -29,11 +29,13 @@ interface PostRepositoryInterface
     public function setCreatePost(Post $post, UploadedFile $file): object;
 
     /**
-     * @param \App\Entity\Post $post
+     * @param \App\Entity\Post                                         $post
+     *
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile|null $file
      *
      * @return Post
      */
-    public function setUpdatePost(Post $post, UploadedFile $file): object;
+    public function setUpdatePost(Post $post, ?UploadedFile $file): object;
 
     /**
      * @param \App\Entity\Post $post

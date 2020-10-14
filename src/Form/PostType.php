@@ -33,10 +33,7 @@ class PostType extends AbstractType
                 'required' => false,
                 'mapped' => false
             ])
-           /* ->add('updated_at')
-            ->add('created_at')
-            ->add('is_published')
-            ->add('created_by')*/
+
            ->add('save', SubmitType::class,[
                'label' => 'Save Post',
                'attr' => [

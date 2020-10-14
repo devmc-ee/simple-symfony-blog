@@ -41,7 +41,8 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
      */
     public function getAllPosts(): array
     {
-        return parent::findAll();
+        return parent::findBy([],
+            ['id' => 'DESC']);
     }
 
     /**
@@ -77,15 +78,17 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
     }
 
     /**
-     * @param \App\Entity\Post $post
+     * @param \App\Entity\Post                                    $post
+     *
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
      *
      * @return Post
      */
-    public function setUpdatePost(Post $post, UploadedFile $file): object
+    public function setUpdatePost(Post $post, ?UploadedFile $file): object
     {
-        $fileName = $post->getImage();
-        if ($file) {
 
+        if ($file) {
+            $fileName = $post->getImage();
             if ($fileName) {
                 $this->fileManager->removePostImage($fileName);
             }
@@ -93,8 +96,8 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
             $post->setImage($fileName);
         }
         $post->setUpdateAtValue();
-        //$this->entityManager->persist($post);
         $this->entityManager->flush();
+        return $post;
     }
 
     /**
@@ -108,6 +111,9 @@ class PostRepository extends ServiceEntityRepository implements PostRepositoryIn
         if($fileName){
             $this->fileManager->removePostImage($fileName);
         }
+        //TODO: check for comments & delete them all
+
+
         $this->entityManager->remove($post);
         $this->entityManager->flush();
     }

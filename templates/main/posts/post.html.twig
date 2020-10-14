@@ -11,8 +11,51 @@
         <div class="col-3"><img class="img-fluid post-image" src="{{ asset('uploads/post/') }}{{ post.image }}"
                                 alt=""></div>
         <div class="col">
-          {{ post.content |raw }}
+            {{ post.content |raw }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form(commentForm) }}
         </div>
     </div>
 
+    <div class="row">
+        <div class="col">
+            <h3>Recent comments</h3>
+
+            <div class="comments-container">
+
+                {% if comments %}
+
+                    {% for comment in comments %}
+
+                        <div class="bd-callout bd-callout-info card comment-{{ comment.id }}">
+                            <blockquote class="blockquote mb-0 ">
+                                <p> {{ comment.content }}</p>
+                                <footer class="blockquote-footer text-muted small">
+                                   id: {{ comment.id }}>  Added at {{ comment.createdAt | date('d.m.Y H:i') }}
+                                </footer>
+                            </blockquote>
+                        </div>
+
+                    {% endfor %}
+                    {% else %}
+                    No comments yet. Be the first one!
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <input id="last_comment_id" type="text" hidden
+           value="{% if comments %}{{comments[0].id}}{% endif %}">
+{% endblock %}
+{% block javascripts %}
+    <script>
+        window.blogData = {
+            "ajax_url": "{{ url('comment_create') }}",
+            "post_id": "{{ post.id }}"
+        };
+
+    </script>
+    <script src="{{ asset('assets/main/js/add-comment.js') }}"></script>
 {% endblock %}

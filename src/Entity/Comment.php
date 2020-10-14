@@ -95,7 +95,7 @@ class Comment
     public function setIsHidden(){
         $this->is_published = self::HIDDEN;
     }
-    public function setIsPublished(bool $is_published): self
+    public function setIsPublished()
     {
         $this->is_published = self::PUBLISHED;
 

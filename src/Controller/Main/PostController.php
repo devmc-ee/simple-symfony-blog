@@ -4,7 +4,12 @@
 namespace App\Controller\Main;
 
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
+use App\Repository\CommentRepositoryInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -14,6 +19,17 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PostController extends BaseController
 {
+    private $commentRepository;
+    private $entityManager;
+
+    public function __construct(
+        CommentRepositoryInterface $commentRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        $this->commentRepository = $commentRepository;
+        $this->entityManager = $entityManager;
+    }
+
     /**
      * @Route("/posts", name="posts")
      */
@@ -24,20 +40,45 @@ class PostController extends BaseController
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Home: all posts';
         $forRender['posts'] = $posts;
+
         return $this->render('main/index.html.twig', $forRender);
 
     }
+
     /**
-     * @Route("/posts/{id}", name="post_show")
-     * @param int $id
+     * @Route("/posts/{postId}", name="post_show")
+     * @param int                                       $postId
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function show(int $id)
+    public function show(int $postId, Request $request)
     {
         $post = $this->getDoctrine()->getRepository(Post::class)
-            ->find($id);
+                     ->find($postId);
+        $comment = new Comment();
+        $commentsForm = $this->createForm(CommentType::class, $comment);
+        $commentsForm->handleRequest($request);
+        if ($commentsForm->isSubmitted() && $commentsForm->isValid()) {
+
+            //fallback in case the form sent request via http method, and not via ajax request
+            if(empty(($commentsForm->get('content')->getData()))){
+                return $this->redirectToRoute('post_show',['postId'=>$postId]);
+            }
+            $this->commentRepository->createComment($comment, $post);
+            $this->entityManager->persist($comment);
+            $this->entityManager->flush();
+            $this->addFlash('success', 'Comment is added!');
+
+        }
+        $comments = $this->commentRepository->getAllComments($postId);
         $forRender = $this->renderDefault();
-        $forRender['title'] = $post->getTitle();
+        $forRender['title'] = 'Post: '.$post->getTitle();
         $forRender['post'] = $post;
+        $forRender['comments'] = $comments;
+        $forRender['commentForm'] = $commentsForm->createView();
+
         return $this->render('main/posts/post.html.twig', $forRender);
     }
 }
