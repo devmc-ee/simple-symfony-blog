@@ -4,7 +4,7 @@
     const settings = window.blogData;
     const commentsContainer = document.querySelector('.comments-container');
     const commentContentInput = document.getElementById('comment_content');
-
+    const noCommentNotice = document.querySelector('.no-comments-alert');
     submitBtn.addEventListener('click', e => makeRequest(e));
 
     function makeRequest(event) {
@@ -43,7 +43,6 @@
                 commentContentInput.value = '';
 
                 const response = JSON.parse(xhr.responseText);
-                console.log('response', response)
                 addCommentBlock(response);
             } else {
                 console.error('Woops... Something went wrong.');
@@ -86,7 +85,7 @@
                         </div>`;
             }
         }
-
+        noCommentNotice.classList.add('d-none');
         newCommentBlocks += '<hr>';
         commentsContainer.innerHTML = newCommentBlocks + commentsContainer.innerHTML;
     }

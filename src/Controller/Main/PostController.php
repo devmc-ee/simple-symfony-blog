@@ -8,6 +8,7 @@ use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\CommentType;
 use App\Repository\CommentRepositoryInterface;
+use App\Repository\PostRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,13 +22,16 @@ class PostController extends BaseController
 {
     private $commentRepository;
     private $entityManager;
+    private $postRepository;
 
     public function __construct(
         CommentRepositoryInterface $commentRepository,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        PostRepositoryInterface $postRepository
     ) {
         $this->commentRepository = $commentRepository;
         $this->entityManager = $entityManager;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -57,14 +61,15 @@ class PostController extends BaseController
     {
         $post = $this->getDoctrine()->getRepository(Post::class)
                      ->find($postId);
+
         $comment = new Comment();
         $commentsForm = $this->createForm(CommentType::class, $comment);
         $commentsForm->handleRequest($request);
-        if ($commentsForm->isSubmitted() && $commentsForm->isValid()) {
 
-            //fallback in case the form sent request via http method, and not via ajax request
-            if(empty(($commentsForm->get('content')->getData()))){
-                return $this->redirectToRoute('post_show',['postId'=>$postId]);
+        //just in case if the form sent request via http method, and not via ajax request
+        if ($commentsForm->isSubmitted() && $commentsForm->isValid()) {
+            if (empty(($commentsForm->get('content')->getData()))) {
+                return $this->redirectToRoute('post_show', ['postId' => $postId]);
             }
             $this->commentRepository->createComment($comment, $post);
             $this->entityManager->persist($comment);
@@ -72,7 +77,9 @@ class PostController extends BaseController
             $this->addFlash('success', 'Comment is added!');
 
         }
+
         $comments = $this->commentRepository->getAllPublishedCommentsBy($postId);
+
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Post: '.$post->getTitle();
         $forRender['post'] = $post;
@@ -80,5 +87,23 @@ class PostController extends BaseController
         $forRender['commentForm'] = $commentsForm->createView();
 
         return $this->render('main/posts/post.html.twig', $forRender);
+    }
+
+    /**
+     * @Route("search/posts/", name="search_posts")
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function search(Request $request)
+    {
+        $query = $request->query->get('q');
+        $searchResult = $this->postRepository->searchBy($query);
+
+        $forRender = $this->renderDefault();
+        $forRender['title'] = "Search results for: <i>$query</i>";
+        $forRender['searchResult'] = $searchResult;
+
+        return $this->render('main/posts/search.html.twig', $forRender);
     }
 }

@@ -1,0 +1,51 @@
+{% extends 'main/base.html.twig' %}
+{% block body %}
+    <div class="row mb-3">
+        <div class="col">
+            <h1 class="mt-3 mb-3">
+                {{ title | raw }}
+            </h1>
+
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col">
+
+            <div class="search-result-container">
+
+                {% if searchResult %}
+
+                    {% for result in searchResult %}
+
+                        <div class="bd-callout bd-callout-info card">
+                            <blockquote class="blockquote mb-0 ">
+                                <h3>
+                                    <a href="{{ path('post_show', {'postId': result.id}) }}">
+                                        {{ result.title }}
+                                    </a>
+                                </h3>
+                                <div class="content">
+                                    {{ result.content  [:200]  | raw }}...
+                                </div>
+                                <footer class="blockquote-footer text-muted small">
+                                    id: {{ result.id }}> Added at {{ result.createdAt | date('d.m.Y H:i') }}
+                                </footer>
+                            </blockquote>
+                        </div>
+
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        Nothing was found, sorry!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+
+{% endblock %}
