@@ -38,9 +38,12 @@ class AdminCommentController extends AdminBaseController
     {
         $comment = $this->commentRepository->getCommentBy($commentId);
         $this->commentRepository->setIsHidden($comment);
+        $postId = $comment->getPost()->getId();
+
         $this->addFlash('success', "The comment #$commentId is hidden now!");
 
-        return $this->redirectToRoute('admin_comments');
+        return $this->redirectToRoute('admin_post_edit', ['id' => $postId]);
+
     }
 
     /**
@@ -52,10 +55,13 @@ class AdminCommentController extends AdminBaseController
     public function publishComment(int $commentId)
     {
         $comment = $this->commentRepository->getCommentBy($commentId);
+        $postId = $comment->getPost()->getId();
+
         $this->commentRepository->setIsPublished($comment);
         $this->addFlash('success', "The comment #$commentId is published now!");
 
-        return $this->redirectToRoute('admin_comments');
+        return $this->redirectToRoute('admin_post_edit', ['id' => $postId]);
+
     }
 
     /**
@@ -67,9 +73,11 @@ class AdminCommentController extends AdminBaseController
     public function deleteComment(int $commentId)
     {
         $comment = $this->commentRepository->getCommentBy($commentId);
+        $postId = $comment->getPost()->getId();
+
         $this->commentRepository->setDeleteComment($comment);
         $this->addFlash('success', "The comment #$commentId was deleted!");
 
-        return $this->redirectToRoute('admin_comments');
+        return $this->redirectToRoute('admin_post_edit', ['id' => $postId]);
     }
 }

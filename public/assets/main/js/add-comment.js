@@ -7,6 +7,12 @@
     const noCommentNotice = document.querySelector('.no-comments-alert');
     submitBtn.addEventListener('click', e => makeRequest(e));
 
+    /**
+     * Callback for submit button event
+     * Sends xhr request t
+     * @param event
+     * @returns {boolean}
+     */
     function makeRequest(event) {
         xhr = new XMLHttpRequest();
         if (!xhr) {
@@ -19,7 +25,7 @@
         const comment_content = commentContentInput.value;
 
         if (!comment_content.replace(/^\s+|\s+$/gm, '')) {
-            console.log('empty');
+            console.info('empty input is not allowed');
             return false;
         }
 
@@ -35,6 +41,10 @@
         xhr.send(JSON.stringify(data));
     }
 
+    /**
+     * Parse response and add comments
+     * Callback for readyStateChange
+     */
     function processResponse() {
 
         if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -52,6 +62,10 @@
         }
     }
 
+    /**
+     *
+     * @param response
+     */
     function addCommentBlock(response) {
 
         let newCommentBlocks = '';
@@ -60,6 +74,7 @@
             setLastCommentId(response.last_comments[0].id);
         }
         if (response.comments_returned_count === 0) {
+            noCommentNotice.classList.add('d-none');
             const comment = response.last_comments;
             const commentDateTime = comment.created_at;
             newCommentBlocks = newCommentBlocks + `
@@ -74,7 +89,8 @@
         } else {
             for (let comment of response.last_comments) {
                 let commentDateTime = comment.created_at.date.substring(0, 16);
-                newCommentBlocks = newCommentBlocks + `
+                newCommentBlocks += makeCommentBlockHtml(comment.id,comment.content,commentDateTime);
+               /* `
 <div class="bd-callout bd-callout-info card comment-${comment.id}">
                             <blockquote class="blockquote mb-0 ">
                                 <p> ${comment.content}</p>
@@ -82,10 +98,10 @@
                                    id: ${comment.id}: Added at ${commentDateTime}
                                 </footer>
                             </blockquote>
-                        </div>`;
+                        </div>`*/;
             }
         }
-        noCommentNotice.classList.add('d-none');
+
         newCommentBlocks += '<hr>';
         commentsContainer.innerHTML = newCommentBlocks + commentsContainer.innerHTML;
     }
@@ -103,5 +119,17 @@
 
         const lastCommentIdInput = document.getElementById('last_comment_id');
         lastCommentIdInput.value = lastCommentId;
+    }
+
+    function makeCommentBlockHtml(comment_id, comment_content, commentDateTime ) {
+        return `
+<div class="bd-callout bd-callout-info card comment-${comment_id}">
+                            <blockquote class="blockquote mb-0 ">
+                                <p> ${comment_content}</p>
+                                <footer class="blockquote-footer text-muted small">
+                                   id: ${comment_id}: Added at ${commentDateTime}
+                                </footer>
+                            </blockquote>
+                        </div>`;
     }
 })();
