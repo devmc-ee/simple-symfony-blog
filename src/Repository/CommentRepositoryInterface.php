@@ -23,4 +23,6 @@ interface CommentRepositoryInterface
     public function setIsHidden(Comment $comment);
 
     public function setIsPublished(Comment $comment);
+
+    public function setDeleteComment(Comment $comment);
 }

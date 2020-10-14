@@ -55,4 +55,16 @@ class AdminCommentController extends AdminBaseController
         return $this->redirectToRoute('admin_comments');
     }
 
+    /**
+     * @Route("/admin/comment/delete/{commentId}", name="admin_comment_delete")
+     * @param int $commentId
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteComment(int $commentId){
+        $comment = $this->commentRepository->getCommentBy($commentId);
+        $this->commentRepository->setDeleteComment($comment);
+        $this->addFlash('success', "The comment #$commentId was deleted!");
+        return $this->redirectToRoute('admin_comments');
+    }
 }

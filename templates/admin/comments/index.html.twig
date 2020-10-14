@@ -48,7 +48,7 @@
                         {% else %}
                             <a href="{{ path('admin_comment_publish', {'commentId': comment.id}) }}">Publish</a>
                         {% endif %}
-                        <a href="{{ path('admin_post_edit', {'id': comment.id}) }}">Delete</a>
+                        <a href="{{ path('admin_comment_delete', {'commentId': comment.id}) }}">Delete</a>
                     </td>
                 </tr>
             {% endfor %}
