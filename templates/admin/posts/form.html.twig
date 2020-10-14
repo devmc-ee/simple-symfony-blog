@@ -1,10 +1,14 @@
 {% extends 'admin/adminbase.html.twig' %}
 
 {% block body %}
-    <h1 class="mb-5">
+    <h1 class="mb-3">
         {{ title }}
     </h1>
-
+    {% if postId is defined %}
+    <p>
+        <a href="{{ path('post_show',{'postId': postId}) }}">View post</a>
+    </p>
+    {% endif %}
     <div class="container mb-5">
         <div class="row no-gutters">
             <div class="col">
@@ -12,7 +16,17 @@
             </div>
         </div>
     </div>
-    {% if comments is defined and  comments %}
+    <div class="row">
+        <div class="col  justify-content-center">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% if comments is defined and comments %}
         <table class="table table-fullwidth  table-hover ">
             <tbody>
             <tr>
@@ -49,6 +63,8 @@
             </tbody>
         </table>
     {% else %}
-        No have any comments yet.
+        <div class="alert alert-warning">
+            No have any comments yet.
+        </div>
     {% endif %}
 {% endblock %}

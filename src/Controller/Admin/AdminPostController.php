@@ -42,22 +42,24 @@ class AdminPostController extends AdminBaseController
 
     /**
      * @Route("/admin/posts/create", name="admin_posts_create")
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function create(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
         $post = new Post();
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $file = $form->get('image')->getData();
-            $this->postRepository->setCreatePost($post, $file);
-            $entityManager->persist($post);
-            $entityManager->flush();
-            $this->addFlash('success', 'Post is created!');
+            $newPost = $this->postRepository->setCreatePost($post, $file);
+            $newPostId = $newPost->getId();
+
+            $this->addFlash('success', "New Post #$newPostId is created!");
 
             return $this->redirectToRoute('admin_posts');
         }
@@ -98,8 +100,10 @@ class AdminPostController extends AdminBaseController
             return $this->redirectToRoute('admin_posts');
         }
         $comments = $this->commentRepository->getAllCommentsBy($id);
+
         $forRender = $this->renderDefault();
         $forRender['title'] = 'Updating post';
+        $forRender['postId'] = $id;
         $forRender['form'] = $form->createView();
         $forRender['comments'] =$comments;
 

@@ -27,6 +27,9 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
     }
 
 
+    /**
+     * @return array
+     */
     public function getAllComments(): array
     {
         return parent::findBy(
@@ -35,6 +38,11 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         );
     }
 
+    /**
+     * @param int $postId
+     *
+     * @return array
+     */
     public function getAllCommentsBy(int $postId): array
     {
         return parent::findBy(
@@ -43,6 +51,11 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         );
     }
 
+    /**
+     * @param int $postId
+     *
+     * @return array
+     */
     public function getAllPublishedCommentsBy(int $postId): array
     {
         return parent::findBy(
@@ -54,6 +67,12 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         );
     }
 
+    /**
+     * @param \App\Entity\Comment $comment
+     * @param \App\Entity\Post    $post
+     *
+     * @return \App\Entity\Comment
+     */
     public function createComment(Comment $comment, Post $post): Comment
     {
 
@@ -66,6 +85,12 @@ class CommentRepository extends ServiceEntityRepository implements CommentReposi
         return $comment;
     }
 
+    /**
+     * @param int    $postId
+     * @param string $lastCommentId
+     *
+     * @return array
+     */
     public function getAllLatestComments(int $postId, string $lastCommentId): array
     {
         $lastCommentIdValue = $lastCommentId ?: 0;

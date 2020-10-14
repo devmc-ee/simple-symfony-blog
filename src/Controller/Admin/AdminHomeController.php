@@ -20,10 +20,7 @@ class AdminHomeController extends AdminBaseController
 	 */
 	public function index()
 	{
-
-
         return $this->redirectToRoute('admin_posts');
-
 	}
 
 }

@@ -7,7 +7,6 @@ namespace App\Controller\Main;
 use App\Entity\Comment;
 use App\Repository\CommentRepositoryInterface;
 use App\Repository\PostRepositoryInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,28 +21,25 @@ class CommentController extends BaseController
 {
     private $postRepository;
     private $commentRepository;
-    private $entityManager;
 
     /**
      * CommentController constructor.
      *
      * @param \App\Repository\CommentRepositoryInterface $commentRepository
-     * @param \Doctrine\ORM\EntityManagerInterface       $entityManager
      * @param \App\Repository\PostRepositoryInterface    $postRepository
      */
     public function __construct(
         CommentRepositoryInterface $commentRepository,
-        EntityManagerInterface $entityManager,
         PostRepositoryInterface $postRepository
     ) {
         $this->commentRepository = $commentRepository;
-        $this->entityManager = $entityManager;
         $this->postRepository = $postRepository;
     }
 
     /**
      * Create comment via ajax request (post)
      * Returns all last comments that were added later than the registered  one
+     *
      * @Route("/comment/create", name="comment_create")
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
@@ -72,7 +68,6 @@ class CommentController extends BaseController
         $createdAt = $comment->getCreatedAt();
 
         if ($lastCommentId) {
-
             $lastNewComments = $this->commentRepository->getAllLatestComments($postId, $lastCommentId);
         }
 

@@ -37,9 +37,9 @@ class AdminCommentController extends AdminBaseController
     public function hideComment(int $commentId)
     {
         $comment = $this->commentRepository->getCommentBy($commentId);
-        $this->commentRepository->setIsHidden($comment);
         $postId = $comment->getPost()->getId();
 
+        $this->commentRepository->setIsHidden($comment);
         $this->addFlash('success', "The comment #$commentId is hidden now!");
 
         return $this->redirectToRoute('admin_post_edit', ['id' => $postId]);

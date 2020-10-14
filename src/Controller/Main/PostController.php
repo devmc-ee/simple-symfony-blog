@@ -66,16 +66,17 @@ class PostController extends BaseController
         $commentsForm = $this->createForm(CommentType::class, $comment);
         $commentsForm->handleRequest($request);
 
-        //just in case if the form sent request via http method, and not via ajax request
+        //just in case if the form request via http method, and not via ajax request
         if ($commentsForm->isSubmitted() && $commentsForm->isValid()) {
+
             if (empty(($commentsForm->get('content')->getData()))) {
                 return $this->redirectToRoute('post_show', ['postId' => $postId]);
             }
+
             $this->commentRepository->createComment($comment, $post);
-            $this->entityManager->persist($comment);
-            $this->entityManager->flush();
             $this->addFlash('success', 'Comment is added!');
 
+            return $this->redirectToRoute('post_show',['postId'=>$postId]);
         }
 
         $comments = $this->commentRepository->getAllPublishedCommentsBy($postId);
