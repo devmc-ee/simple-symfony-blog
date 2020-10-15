@@ -36,7 +36,7 @@ class FileManagerService implements FileManagerServiceInterface
         try{
             $file->move($this->getPostImageDir(), $fileName);
         }catch (FileException $exception){
-            return $exception->getMessage();
+            echo $exception->getMessage();
         }
 
         return $fileName;
@@ -54,7 +54,7 @@ class FileManagerService implements FileManagerServiceInterface
         try{
             $fileSystem->remove($file);
         }catch (IOException $error){
-            return $error->getMessage();
+            echo $error->getMessage();
         }
     }
 
