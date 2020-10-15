@@ -72,3 +72,4 @@ Comment can be hidden or deleted. Hidden comment can be seen only in admin panel
 To view all comments login and open admin panel -> comments. 
 To see all comments related to a single post, open edit page of the post.
 
+Use search for finding post by its content or title
