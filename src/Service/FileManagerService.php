@@ -31,7 +31,7 @@ class FileManagerService implements FileManagerServiceInterface
      */
     public function imagePostUpload(UploadedFile $file): string
     {
-        $fileName = uniqid('', true). '.'.$file->getExtension();
+        $fileName = uniqid('', true). '.'.$file->guessExtension();
 
         try{
             $file->move($this->getPostImageDir(), $fileName);
